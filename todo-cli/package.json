@@ -1,29 +1,19 @@
 {
-  "name": "http-server",
+  "name": "todo-cli",
   "version": "1.0.0",
-  "description": "\"My http-server\"",
-  "main": "index.js",
+  "description": "",
+  "main": "todo.js",
   "scripts": {
     "test": "jest",
-    "start": "node index.js",
-    "prepare": "cd .. && husky install todo-cli/.husky"
+    "prepare": "cd.. && husky install todo-cli/.husky"
   },
-  "author": "\"ISN\"",
+  "author": "Sai-Srujan <pandirisaisrujan@gmail.com>",
   "license": "ISC",
-  "dependencies": {
-    "minimist": "^1.2.8",
-    "prettier": "^3.1.1"
-  },
   "devDependencies": {
     "eslint": "^8.56.0",
     "husky": "^8.0.3",
-    "jest": "^29.7.0",
-    "lint-staged": "^15.2.0"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint",
-      "prettier --write ."
-    ]
+    "jest": "^29.4.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.1"
   }
 }
