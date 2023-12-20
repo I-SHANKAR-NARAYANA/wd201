@@ -19,7 +19,7 @@ fs.readFile("registration.html", (err, registration) => {
     registrationContent = registration;
   });
 
-fs.readFile("projects.html", (err, project) => {
+fs.readFile("project.html", (err, project) => {
   if (err) {
     throw err;
   }
@@ -31,7 +31,7 @@ http.createServer((request, response) => {
     let url = request.url
     response.writeHeader(200, {"Content-Type":"text/html"})
     switch (url) {
-        case "/projects":
+        case "/project":
           response.write(projectContent);
           response.end();
           break;
@@ -41,7 +41,7 @@ http.createServer((request, response) => {
         response.end();
         break;
         
-        
+
 
         default:
           response.write(homeContent);
