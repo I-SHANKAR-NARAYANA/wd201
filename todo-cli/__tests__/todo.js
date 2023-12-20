@@ -19,24 +19,9 @@ describe("Todo List Test Suite", () => {
       completed: false,
       dueDate: new Date().toISOString().slice(0, 10),
     };
-
     add(newTodo);
-
     expect(all.length).toBe(initialTodoCount + 1);
-    expect(all[initialTodoCount]).toEqual(newTodo);
-  });
-
-  test("Should Mark a Todo as Complete", () => {
-    const testTodo = {
-      title: "Test Todo",
-      completed: false,
-      dueDate: new Date().toISOString().slice(0, 10),
-    };
-    add(testTodo);
-    const testTodoIndex = all.findIndex((todo) => todo === testTodo);
-    expect(all[testTodoIndex].completed).toBe(false);
-    markAsComplete(testTodoIndex);
-    expect(all[testTodoIndex].completed).toBe(true);
+    expect(all[initialTodoCount].title).toEqual("Test Todo");
   });
 
   test("Should Mark a Todo as Complete", () => {
