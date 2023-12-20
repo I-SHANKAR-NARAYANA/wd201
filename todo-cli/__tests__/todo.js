@@ -13,19 +13,28 @@ describe("Todo List Test Suite", () => {
   });
 
   test("Should Add New Todo", () => {
-    const todoItemsCount = all.length;
-    add({
-      title: "Test todo",
-      competed: false,
+    const initialTodoCount = all.length;
+    const newTodo = {
+      title: "Test Todo",
+      completed: false,
       dueDate: new Date().toISOString().slice(0, 10),
-    });
-    expect(all.length).toBe(todoItemsCount + 1);
+    };
+    add(newTodo);
+    expect(all.length).toBe(initialTodoCount + 1);
+    expect(all[initialTodoCount]).toEqual(newTodo);
   });
 
   test("Should Mark a Todo as Complete", () => {
-    expect(all[0].completed).toBe(false);
-    markAsComplete(0);
-    expect(all[0].completed).toBe(true);
+    const testTodo = {
+      title: "Test Todo",
+      completed: false,
+      dueDate: new Date().toISOString().slice(0, 10),
+    };
+    add(testTodo);
+    const testTodoIndex = all.findIndex((todo) => todo === testTodo);
+    expect(all[testTodoIndex].completed).toBe(false);
+    markAsComplete(testTodoIndex);
+    expect(all[testTodoIndex].completed).toBe(true);
   });
 
   test("Should Retrieve Overdue Todos", () => {
