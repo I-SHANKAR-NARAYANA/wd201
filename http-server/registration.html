@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="registration.css" />
+    <title>Registration Form</title>
+    <style>
+      body {
+        background-color: #f7f3f0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      form {
+        background-color: #ff8c00a1;
+        padding: 20px;
+        max-width: 400px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      input,
+      button,
+      [type="checkbox"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+      }
+
+      input[type="checkbox"] {
+        width: auto;
+        margin-bottom: 0;
+      }
+
+      button {
+        background-color: #ff8c00;
+        color: #fff;
+        padding: 12px;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="myForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+      />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+
+      <label for="dob">Date of Birth</label>
+      <input
+        type="date"
+        id="dob"
+        name="dob"
+        required
+        max="2005-11-20"
+        min="1968-11-20"
+      />
+
+      <input type="checkbox" id="acceptTerms" name="acceptTerms" required />
+      <label for="acceptTerms">Accept Terms & Conditions</label>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Password</th>
+          <th>Dob</th>
+          <th>Accepted Terms?</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script src="registration.js">
+            document.addEventListener("DOMContentLoaded", function () {
+        const myForm = document.getElementById("myForm");
+        const tableBody = document
+          .getElementById("userTable")
+          .getElementsByTagName("tbody")[0];
+        myForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const formData = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            dob: document.getElementById("dob").value,
+            acceptTerms: document.getElementById("acceptTerms").checked,
+          };
+          const calculateAge = (dob) => {
+            const today = new Date();
+            const birthDate = new Date(dob);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (
+              monthDiff < 0 ||
+              (monthDiff === 0 && today.getDate() < birthDate.getDate())
+            ) {
+              age--;
+            }
+            return age;
+          };
+          const age = calculateAge(formData[dob]);
+          if (age < 18 || age > 55) {
+            alert("Only 18 to 55 allwed");
+            myForm.reset();
+          }
+          const storedData = JSON.parse(localStorage.getItem("formData")) || [];
+          storedData.push(formData);
+          const newRow = tableBody.insertRow();
+          const keys = ["name", "email", "password", "dob", "acceptTerms"];
+          keys.forEach((key) => {
+            const cell = newRow.insertCell();
+            cell.textContent = formData[key];
+          });
+          localStorage.setItem("formData", JSON.stringify(storedData));
+          myForm.reset();
+        });
+
+        const userData = JSON.parse(localStorage.getItem("formData")) || [];
+
+        userData.forEach((user) => {
+          const row = tableBody.insertRow();
+          const keys = ["name", "email", "password", "dob", "acceptTerms"];
+
+          keys.forEach((key) => {
+            const cell = row.insertCell();
+            cell.textContent = user[key];
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
