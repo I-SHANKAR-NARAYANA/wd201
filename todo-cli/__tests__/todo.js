@@ -36,45 +36,41 @@ describe("Todo List Test Suite", () => {
   });
 
   test("Should Retrieve Overdue Todos", () => {
-    const overdueTodos = overdue();
-    overdueTodos.forEach((todo) => {
-      expect(new Date(todo.dueDate)).toEqual(yesterday);
-    });
     add({
-      title: "Overdue Todo Title",
+      title: "Overdues Todo",
       completed: false,
-      dueDate: yesterday.toISOString().slice(0, 10),
+      dueDate: "2023-01-01",
     });
-    expect(overdueTodos.length).toBe(1);
-    expect(overdueTodos[0].title).toBe("Overdue Todo Title");
+
+    const allOverDue = overdue();
+
+    expect(allOverDue.length).toBe(1);
+    expect(allOverDue[0].title).toBe("Overdues Todo");
   });
 
   test("Should Retrieve DueToday Todos", () => {
-    const dueTodayTodos = dueToday();
-    const today = new Date().toISOString().slice(0, 10);
-    dueTodayTodos.forEach((todo) => {
-      expect(new Date(todo.dueDate)).toEqual(new Date(today));
-    });
     add({
-      title: "DueToday Todo Title",
+      title: "DueToday Todo",
       completed: false,
-      dueDate: today,
+      dueDate: todayDate,
     });
-    expect(dueTodayTodos.length).toBe(1);
-    expect(dueTodayTodos[0].title).toBe("DueToday Todo Title");
+
+    const todayDueItems = dueToday();
+
+    expect(todayDueItems.length).toBe(1);
+    expect(todayDueItems[0].title).toBe("DueToday Todo");
   });
 
   test("Should Retrieve DueLater Todos", () => {
-    const dueLaterTodos = dueLater();
-    dueLaterTodos.forEach((todo) => {
-      expect(new Date(todo.dueDate)).toEqual(tomorrow);
-    });
     add({
-      title: "DueLater Todo Title",
+      title: "DueLater Todo",
       completed: false,
-      dueDate: tomorrow.toISOString().slice(0, 10),
+      dueDate: "2023-12-31",
     });
-    expect(dueLaterTodos.length).toBe(1);
-    expect(dueLaterTodos[0].title).toBe("DueLater Todo Title");
+
+    const dueLaterItems = dueLater();
+
+    expect(dueLaterItems.length).toBe(1);
+    expect(dueLaterItems[0].title).toBe("DueLater Todo");
   });
 });
