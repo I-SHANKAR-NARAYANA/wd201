@@ -1,73 +1,61 @@
-const ToDoList = require("../todo");
+let todoList = require("../todo");
 
-describe("ToDoList Test Suite", () => {
-  let toDoListInstance;
-
-  beforeEach(() => {
-    toDoListInstance = ToDoList();
+const { all, markAsComplete, add, overdue, dueToday, dueLater } = todoList();
+/* eslint-disable no-undef */
+describe("Todo List Test Suite", () => {
+  beforeAll(() => {
+    const today = new Date();
+    const oneDay = 60 * 60 * 24 * 1000;
+    [
+      {
+        title: "Buy groceries",
+        completed: false,
+        dueDate: new Date(today.getTime() - 2 * oneDay).toLocaleDateString(
+          "en-CA"
+        ),
+      },
+      {
+        title: "Pay bills",
+        completed: false,
+        dueDate: new Date().toLocaleDateString("en-CA"),
+      },
+      {
+        title: "Complete project",
+        completed: false,
+        dueDate: new Date(today.getTime() + 2 * oneDay).toLocaleDateString(
+          "en-CA"
+        ),
+      },
+    ].forEach(add);
   });
 
-  test("Should create a new ToDo", () => {
-    toDoListInstance.add({
-      title: "New instance",
+  test("Should add a new todo", () => {
+    expect(all.length).toEqual(3);
+
+    add({
+      title: "Write tests",
       completed: false,
-      dueDate: "2023-12-31",
+      dueDate: new Date().toLocaleDateString("en-CA"),
     });
 
-    expect(toDoListInstance.all.length).toBe(1);
-    expect(toDoListInstance.all[0].title).toBe("New instance");
+    expect(all.length).toEqual(4);
   });
 
-  test("Should mark a ToDo as completed after its completion", () => {
-    toDoListInstance.add({
-      title: "Incomplete ToDo",
-      completed: false,
-      dueDate: "2023-12-31",
-    });
-
-    toDoListInstance.markAsComplete(0);
-
-    expect(toDoListInstance.all[0].completed).toBe(true);
+  test("Should mark a todo as complete", () => {
+    expect(all[0].completed).toEqual(false);
+    markAsComplete(0);
+    expect(all[0].completed).toEqual(true);
   });
 
-  test("Should retrieve overdue todos", () => {
-    toDoListInstance.add({
-      title: "New Overdue",
-      completed: false,
-      dueDate: "2023-01-01",
-    });
-
-    const allOverdueItems = toDoListInstance.overdue();
-
-    expect(allOverdueItems.length).toBe(1);
-    expect(allOverdueItems[0].title).toBe("New Overdue");
+  test("Should retrieve overdue items", () => {
+    expect(overdue().length).toEqual(1);
   });
 
-  test("Should retrieve due today todos", () => {
-    const todayDate = new Date().toISOString().split("T")[0];
-
-    toDoListInstance.add({
-      title: "New Due Today",
-      completed: false,
-      dueDate: todayDate,
-    });
-
-    const todayDueItems = toDoListInstance.dueToday();
-
-    expect(todayDueItems.length).toBe(1);
-    expect(todayDueItems[0].title).toBe("New Due Today");
+  test("Should retrieve due today items", () => {
+    expect(dueToday().length).toEqual(2);
   });
 
-  test("Should retrieve due later todos", () => {
-    toDoListInstance.add({
-      title: "New Due Later",
-      completed: false,
-      dueDate: "2023-12-31",
-    });
-
-    const dueLaterItems = toDoListInstance.dueLater();
-
-    expect(dueLaterItems.length).toBe(1);
-    expect(dueLaterItems[0].title).toBe("New Due Later");
+  test("Should retrieve due later items", () => {
+    expect(dueLater().length).toEqual(1);
   });
 });
