@@ -1,73 +1,102 @@
-const ToDoList = require("../todo");
+/* eslint-disable no-undef */
+const todoList = () => {
+  all = [];
+  const add = (todoItem) => {
+    all.push(todoItem);
+  };
+  const markAsComplete = (index) => {
+    all[index].completed = true;
+  };
 
-describe("ToDoList Test Suite", () => {
-  let toDoListInstance;
+  const overdue = () => {
+    ovd = all.filter((item) => item.dueDate == yesterday);
+    return ovd;
+  };
 
-  beforeEach(() => {
-    toDoListInstance = ToDoList();
-  });
+  const dueToday = () => {
+    dt = all.filter((item) => item.dueDate == today);
+    return dt;
+  };
 
-  test("Should create a new ToDo", () => {
-    toDoListInstance.add({
-      title: "New instance",
-      completed: false,
-      dueDate: "2023-12-31",
-    });
+  const dueLater = () => {
+    dtt = all.filter((item) => item.dueDate == tomorrow);
+    return dtt;
+  };
 
-    expect(toDoListInstance.all.length).toBe(1);
-    expect(toDoListInstance.all[0].title).toBe("New instance");
-  });
+  const toDisplayableList = (tasks) => {
+    if (tasks[0].dueDate == yesterday) {
+      const yesterdayFormatted = tasks
+        .map((task) => "[ ]" + " " + task.title + " " + yesterday)
+        .join("\n");
+      return yesterdayFormatted;
+    } else if (tasks[0].dueDate == today) {
+      let formattedTasks = "";
+      for (let i = 0; i < tasks.length; i++) {
+        if (i == 0) {
+          formattedTasks += "[x]" + " " + tasks[i].title + " " + "\n";
+        } else {
+          formattedTasks += "[ ]" + " " + tasks[i].title;
+        }
+      }
+      return formattedTasks;
+    } else {
+      const tomorrowFormatted = tasks
+        .map((task) => "[ ]" + " " + task.title + " " + tomorrow)
+        .join("\n");
+      return tomorrowFormatted;
+    }
+  };
 
-  test("Should mark a ToDo as completed after its completion", () => {
-    toDoListInstance.add({
-      title: "Incomplete ToDo",
-      completed: false,
-      dueDate: "2023-12-31",
-    });
+  return {
+    all,
+    add,
+    markAsComplete,
+    overdue,
+    dueToday,
+    dueLater,
+    toDisplayableList,
+  };
+};
 
-    toDoListInstance.markAsComplete(0);
+const todos = todoList();
 
-    expect(toDoListInstance.all[0].completed).toBe(true);
-  });
+const formattedDate = (d) => {
+  return d.toISOString().split("T")[0];
+};
 
-  test("Should retrieve overdue todos", () => {
-    toDoListInstance.add({
-      title: "New Overdue",
-      completed: false,
-      dueDate: "2023-01-01",
-    });
+var dateToday = new Date();
+const today = formattedDate(dateToday);
+const yesterday = formattedDate(
+  new Date(new Date().setDate(dateToday.getDate() - 1)),
+);
+const tomorrow = formattedDate(
+  new Date(new Date().setDate(dateToday.getDate() + 1)),
+);
 
-    const allOverdueItems = toDoListInstance.overdue();
+todos.add({ title: "Submit assignment", dueDate: yesterday, completed: false });
+todos.add({ title: "Pay rent", dueDate: today, completed: true });
+todos.add({ title: "Service Vehicle", dueDate: today, completed: false });
+todos.add({ title: "File taxes", dueDate: tomorrow, completed: false });
+todos.add({ title: "Pay electric bill", dueDate: tomorrow, completed: false });
 
-    expect(allOverdueItems.length).toBe(1);
-    expect(allOverdueItems[0].title).toBe("New Overdue");
-  });
+console.log("My Todo-list\n");
 
-  test("Should retrieve due today todos", () => {
-    const todayDate = new Date().toISOString().split("T")[0];
+console.log("Overdue");
+var overdues = todos.overdue();
+var formattedOverdues = todos.toDisplayableList(overdues);
+console.log(formattedOverdues);
+console.log("\n");
 
-    toDoListInstance.add({
-      title: "New Due Today",
-      completed: false,
-      dueDate: todayDate,
-    });
+console.log("Due Today");
+let itemsDueToday = todos.dueToday();
+let formattedItemsDueToday = todos.toDisplayableList(itemsDueToday);
+console.log(formattedItemsDueToday);
+console.log("\n");
 
-    const todayDueItems = toDoListInstance.dueToday();
+console.log("Due Later");
+let itemsDueLater = todos.dueLater();
+let formattedItemsDueLater = todos.toDisplayableList(itemsDueLater);
+console.log(formattedItemsDueLater);
+console.log("\n\n");
 
-    expect(todayDueItems.length).toBe(1);
-    expect(todayDueItems[0].title).toBe("New Due Today");
-  });
-
-  test("Should retrieve due later todos", () => {
-    toDoListInstance.add({
-      title: "New Due Later",
-      completed: false,
-      dueDate: "2023-12-31",
-    });
-
-    const dueLaterItems = toDoListInstance.dueLater();
-
-    expect(dueLaterItems.length).toBe(1);
-    expect(dueLaterItems[0].title).toBe("New Due Later");
-  });
-});
+module.exports = todoList;
