@@ -20,8 +20,24 @@ module.exports = (sequelize, DataTypes) => {
     static addTodo({ title, dueDate }) {
       return this.create({ title: title, dueDate: dueDate, completed: false });
     }
-    static getTodos() {
-      return this.findAll();
+    static async getTodos() {
+      const allTodos = await this.findAll();
+      if (allTodos.length >= 1) {
+        return allTodos;
+      } else {
+        await this.addTodo({
+          title: "Buy milk",
+          dueDate: new Date().toISOString(),
+          completed: false,
+        });
+        await this.addTodo({
+          title: "Buy xbox",
+          dueDate: new Date().toISOString(),
+          completed: false,
+        });
+        const alTodos = await this.findAll();
+        return alTodos;
+      }
     }
     markAsCompleted() {
       return this.update({ completed: true });
