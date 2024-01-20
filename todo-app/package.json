@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles",
     "start": "nodemon -e js,ejs",
+    "start:prod": "node index.js",
     "db:create:test": "set NODE_ENV=test && npx sequelize-cli db:create",
     "pretest": "set NODE_ENV=test && npx sequelize-cli db:drop --env test && set NODE_ENV=test && npx sequelize-cli db:create --env test",
     "prepare": "cd .. && husky install todo-app/.husky"
