@@ -25,7 +25,8 @@
           </div>
         </form>
         <div>
-          <h5>Overdue</h5>
+          <section id="Overdue">
+          <h5>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h5>
           <ul class="list-none">
             <% for (const todo of overdue) { %>
               <li class="Todo-Item">
@@ -41,7 +42,9 @@
               </li>
             <% } %>
           </ul>
-          <h5>Due Today</h5>
+        </section>
+        <section id="Due Today">
+          <h5>Due Today (<span id="count-due-today"><%= duetoday.length %></span>)</h5>
           <ul class="list-none">
             <% for (const todo of duetoday) { %>
               <li class="Todo-Item">
@@ -57,7 +60,9 @@
               </li>
             <% } %>
           </ul>
-          <h5>Due Later</h5>
+        </section>
+        <section id="Due Later">
+          <h5>Due Later (<span id="count-due-later"><%= duelater.length %></span>)</h5>
           <ul class="list-none">
             <% for (const todo of duelater) { %>
               <li class="Todo-Item">
@@ -73,6 +78,7 @@
               </li>
             <% } %>
           </ul>
+        </section>
         </div>
         <%- include('todos.ejs') %>
       </div>
