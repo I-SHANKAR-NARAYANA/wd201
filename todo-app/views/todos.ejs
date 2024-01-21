@@ -1,6 +1,26 @@
-
-    <% for(var i = 0; i < allTodos.length; i++) { %>
-        <tr>
-            <td><%= allTodos[i].title %></td>
-        </tr>
-    <% } %>
+<section>
+    <h5>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h5>
+    <ul>
+      <% overdue.forEach(todo => { %>
+        <li><%= todo.title %></li>
+      <% }); %>
+    </ul>
+  </section>
+  
+  <section>
+    <h5>Due Today (<span id="count-duetoday"><%= duetoday.length %></span>)</h5>
+    <ul>
+      <% duetoday.forEach(todo => { %>
+        <li><%= todo.title %></li>
+      <% }); %>
+    </ul>
+  </section>
+  
+  <section>
+    <h5>Due Later (<span id="count-duelater"><%= duelater.length %></span>)</h5>
+    <ul>
+      <% duelater.forEach(todo => { %>
+        <li><%= todo.title %></li>
+      <% }); %>
+    </ul>
+  </section>

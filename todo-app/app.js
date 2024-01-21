@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable semi */
 /* eslint-disable quotes */
 const express = require("express");
@@ -9,11 +10,27 @@ app.use(bodyParser.json());
 
 app.set("view engine", "ejs");
 app.get("/", async (request, response) => {
-  const allTodos = await Todo.getTodos();
-  if (request.accepts("html")) {
-    response.render("index", { allTodos });
-  } else {
-    response.json({ allTodos });
+  try {
+    const overdue = await Todo.getOverdueTodos();
+    const duetoday = await Todo.getDueTodayTodos();
+    const duelater = await Todo.getDueLaterTodos();
+
+    if (request.accepts("html")) {
+      response.render("index.ejs", {
+        overdue,
+        duetoday,
+        duelater,
+      });
+    } else {
+      response.json({
+        overdue,
+        duetoday,
+        duelater,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: "Internal Server Error" });
   }
 });
 

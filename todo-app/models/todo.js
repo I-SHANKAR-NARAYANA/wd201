@@ -6,7 +6,7 @@
 /* eslint-disable eol-last */
 /* eslint-disable semi */
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -20,6 +20,107 @@ module.exports = (sequelize, DataTypes) => {
     static addTodo({ title, dueDate }) {
       return this.create({ title: title, dueDate: dueDate, completed: false });
     }
+
+    static async getOverdueTodos() {
+      try {
+        const allTodos = await Todo.findAll({
+          where: {
+            dueDate: {
+              [Op.lt]: new Date(),
+            },
+          },
+        });
+        if (allTodos.length >= 1) {
+          return allTodos;
+        } else {
+          await this.addTodo({
+            title: "Buy milk",
+            dueDate: new Date(
+              new Date().setDate(new Date().getDate() - 1)
+            ).toISOString(),
+            completed: false,
+          });
+          await this.addTodo({
+            title: "Buy xbox",
+            dueDate: new Date(
+              new Date().setDate(new Date().getDate() - 1)
+            ).toISOString(),
+            completed: false,
+          });
+          return this.getOverdueTodos();
+        }
+      } catch (error) {
+        console.error("Error getting overdue todos:", error);
+        throw error;
+      }
+    }
+
+    static async getDueTodayTodos() {
+      try {
+        const allTodos = await Todo.findAll({
+          where: {
+            dueDate: {
+              [Op.between]: [
+                new Date(),
+                new Date(new Date().setHours(23, 59, 59, 999)),
+              ],
+            },
+          },
+        });
+        if (allTodos.length >= 1) {
+          return allTodos;
+        } else {
+          await this.addTodo({
+            title: "Buy milk",
+            dueDate: new Date().toISOString(),
+            completed: false,
+          });
+          await this.addTodo({
+            title: "Buy xbox",
+            dueDate: new Date().toISOString(),
+            completed: false,
+          });
+          return this.getDueTodayTodos();
+        }
+      } catch (error) {
+        console.error("Error getting due today todos:", error);
+        throw error;
+      }
+    }
+
+    static async getDueLaterTodos() {
+      try {
+        const allTodos = await Todo.findAll({
+          where: {
+            dueDate: {
+              [Op.gt]: new Date(),
+            },
+          },
+        });
+        if (allTodos.length >= 1) {
+          return allTodos;
+        } else {
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+
+          await this.addTodo({
+            title: "Buy milk",
+            dueDate: tomorrow.toISOString(),
+            completed: false,
+          });
+          await this.addTodo({
+            title: "Buy xbox",
+            dueDate: tomorrow.toISOString(),
+            completed: false,
+          });
+          return this.getDueLaterTodos();
+        }
+      } catch (error) {
+        console.error("Error getting due later todos:", error);
+        throw error;
+      }
+    }
+
     static async getTodos() {
       const allTodos = await this.findAll();
       if (allTodos.length >= 1) {
