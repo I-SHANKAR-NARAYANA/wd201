@@ -4,91 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
-    <link href="./css/style.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      var token = document
-        .querySelector('meta[name="csrf-token"]')
-        .getAttribute("content");
-      async function updateTodo(id) {
-        var token = document
-          .querySelector('meta[name="csrf-token"]')
-          .getAttribute("content");
 
-        await fetch(`/todos/${id}`, {
-          method: "put",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload();
-            }
-          })
-          .catch((err) => console.error(err));
-      }
-
-      async function deleteTodo(id) {
-        await fetch(`/todos/${id}`, {
-          method: "delete",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            _csrf: token,
-          }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              window.location.reload();
-            }
-          })
-          .catch((err) => console.error(err));
-        setTimeout(() => {
-          window.location.reload();
-        }, 10);
-      }
-    </script>
-    <title>Document</title>
+    <title><%= title %></title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
-
   <body>
     <div class="grid grid-cols-6">
       <div class="col-start-3 col-span-2">
-        <header><%- include('header.ejs') %></header>
-        <form action="/todos" method="post">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <div class="flex gap-2 py-4">
-            <div class="flex-auto">
-              <input
-                type="text"
-                name="title"
-                placeholder="What's next? class"
-                class="border border-grey-400 rounded text-gray-800 w-full p-2 text-sm"
-                required
-              />
-            </div>
-            <div class="flex-auto">
-              <input
-                name="dueDate"
-                type="date"
-                class="border border-grey-800 rounded text-gray-800 w-full p-2 text-sm leading-4"
-                required
-              />
-            </div>
-            <div class="flex-none">
-              <button
-                type="submit"
-                class="bg-green-800 text-white px-4 py-1.5 rounded font-medium mr-2 mb"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </form>
-        <%- include('todos.ejs') %>
+        <%- include('header.ejs') %>
+        <h5 class="py-2">Welcome to To-Do manager</h5>
+        <p class="py-2">
+          New here?<a href="/signup" class="text-green-600">signup</a>
+        </p>
+        <p class="py-2">
+          Already have an account<a href="/login" class="text-green-800"
+            >sign-In</a
+          >
+        </p>
       </div>
     </div>
-    <%- include('footer.ejs') %>
   </body>
 </html>

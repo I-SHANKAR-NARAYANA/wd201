@@ -10,19 +10,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          notNull: true,
-
-        }
+        type: Sequelize.STRING
       },
       dueDate: {
-        type: Sequelize.DATEONLY,
-        allowNull: false,
-        validate: {
-          notNull: true
-        }
+        type: Sequelize.DATEONLY
       },
       completed: {
         type: Sequelize.BOOLEAN
