@@ -3,6 +3,10 @@ body {
     font-family: 'Courier New'
 }
 
+.trash-icon {
+    display: none;
+}
+
 .Todo-Item:hover .trash-icon {
-    display: block
+    display: block;
 }

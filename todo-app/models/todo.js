@@ -28,26 +28,40 @@ module.exports = (sequelize, DataTypes) => {
             dueDate: {
               [Op.lt]: new Date(),
             },
+            completed: {
+              [Op.ne]: true,
+            },
           },
         });
         if (allTodos.length >= 1) {
           return allTodos;
         } else {
           await this.addTodo({
-            title: "Buy milk",
+            title: "Buy eggs",
             dueDate: new Date(
               new Date().setDate(new Date().getDate() - 1)
             ).toISOString(),
             completed: false,
           });
           await this.addTodo({
-            title: "Buy xbox",
+            title: "Buy xboxes",
             dueDate: new Date(
               new Date().setDate(new Date().getDate() - 1)
             ).toISOString(),
             completed: false,
           });
-          return this.getOverdueTodos();
+          const comp = await Todo.findAll({
+            where: {
+              title: "Buy xboxes",
+            },
+          });
+          comp[0].update({ completed: true });
+          const allTodosAgain = await Todo.findAll({
+            where: {
+              title: "Buy eggs",
+            },
+          });
+          return allTodosAgain;
         }
       } catch (error) {
         console.error("Error getting overdue todos:", error);
@@ -57,6 +71,21 @@ module.exports = (sequelize, DataTypes) => {
 
     static async getDueTodayTodos() {
       try {
+        const existingTodos = await Todo.findAll({
+          where: {
+            dueDate: new Date().toISOString(),
+            completed: false,
+          },
+        });
+
+        if (existingTodos.length === 0) {
+          await this.addTodo({
+            title: "Buy today",
+            dueDate: new Date().toISOString(),
+            completed: false,
+          });
+        }
+
         const allTodos = await Todo.findAll({
           where: {
             dueDate: {
@@ -65,23 +94,11 @@ module.exports = (sequelize, DataTypes) => {
                 new Date(new Date().setHours(23, 59, 59, 999)),
               ],
             },
+            completed: false,
           },
         });
-        if (allTodos.length >= 1) {
-          return allTodos;
-        } else {
-          await this.addTodo({
-            title: "Buy milk",
-            dueDate: new Date().toISOString(),
-            completed: false,
-          });
-          await this.addTodo({
-            title: "Buy xbox",
-            dueDate: new Date().toISOString(),
-            completed: false,
-          });
-          return this.getDueTodayTodos();
-        }
+
+        return allTodos;
       } catch (error) {
         console.error("Error getting due today todos:", error);
         throw error;
@@ -90,33 +107,53 @@ module.exports = (sequelize, DataTypes) => {
 
     static async getDueLaterTodos() {
       try {
+        const existingTodos = await Todo.findAll({
+          where: {
+            dueDate: {
+              [Op.gt]: new Date(),
+            },
+            completed: false,
+          },
+        });
+
+        if (existingTodos.length === 0) {
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+
+          await this.addTodo({
+            title: "Buy later",
+            dueDate: tomorrow.toISOString(),
+            completed: false,
+          });
+        }
+
         const allTodos = await Todo.findAll({
           where: {
             dueDate: {
               [Op.gt]: new Date(),
             },
+            completed: false,
           },
         });
-        if (allTodos.length >= 1) {
-          return allTodos;
-        } else {
-          const tomorrow = new Date();
-          tomorrow.setDate(tomorrow.getDate() + 1);
-
-          await this.addTodo({
-            title: "Buy milk",
-            dueDate: tomorrow.toISOString(),
-            completed: false,
-          });
-          await this.addTodo({
-            title: "Buy xbox",
-            dueDate: tomorrow.toISOString(),
-            completed: false,
-          });
-          return this.getDueLaterTodos();
-        }
+        return allTodos;
       } catch (error) {
         console.error("Error getting due later todos:", error);
+        throw error;
+      }
+    }
+    static async getCompletedTodos() {
+      try {
+        const allCompletedTodos = await Todo.findAll({
+          where: {
+            completed: {
+              [Op.ne]: false,
+            },
+          },
+        });
+        console.log("helo1598", allCompletedTodos);
+        return allCompletedTodos;
+      } catch (error) {
+        console.error("Error getting completed todos:", error);
         throw error;
       }
     }
@@ -134,14 +171,15 @@ module.exports = (sequelize, DataTypes) => {
         await this.addTodo({
           title: "Buy xbox",
           dueDate: new Date().toISOString(),
-          completed: false,
+          completed: true,
         });
         const alTodos = await this.findAll();
         return alTodos;
       }
     }
-    markAsCompleted() {
-      return this.update({ completed: true });
+
+    setCompletionStatus(status) {
+      return this.update({ completed: status });
     }
   }
   Todo.init(
